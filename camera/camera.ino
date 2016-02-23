@@ -42,7 +42,7 @@ void timeUntilNextPhoto(int interval)
   
 void screen1(){
   //Setup Screen - Select Time
-  while(true){ //Buttons haven't been created yet. ***
+  while(buttonSet !== HIGH){
     lcdClearLine();
     lcd.setCursor(0,0);
     lcd.print("Select Time:");
@@ -79,15 +79,33 @@ void screen1(){
   }
  
 }
-
 void screen2(){
+  //Initiatize screen with qty set to true and print that qty is true
+  boolean useQty = true;
+  boolean useTime = false;
   lcdClearLine();
   lcd.setCursor(0,0);
   lcd.print("Qty or Time?");
   lcd.setCursor(0,1);
-  lcd.print(">Qty >Time"); //Change Quantity to two options
-}
+  lcd.print(">Qty  Time"); 
 
+  while(buttonSet !== HIGH){
+    lcd.setCursor(0,1);
+    if(buttonContinue == HIGH){
+      if(useQty == true){
+        useQty = false;
+        useTime = true;
+        lcd.print("Qty  >Time");   
+      }
+      else if(useTime == true){
+        useQty = true;
+        useTime = false;
+        lcd.print(">Qty  Time");   
+      }
+    }
+  }
+  //*** What to do with time or qty?
+}
 void screen3(){
   int setupCountdown = 5;
   while(setupCountdown > 0){
