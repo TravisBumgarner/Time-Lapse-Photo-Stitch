@@ -1,15 +1,20 @@
 // anything with *** has to be edited
 
-
-
+/************************Libraries*************************/
 #include <LiquidCrystal.h>// include the library code
-/**********************************************************/
-// initialize hardware stuff
+
+/**********************Hardware Setup**********************/
+//Pins for various elements
 LiquidCrystal lcd(4, 6, 10, 11, 12, 13);
-int buttonUp = 0;    //***
-int buttonDown = 0; //***
-int buttonContinue = 0; //***
-int buttonSetValue = 0; //***
+const int buttonUpPin = 0;   
+const int buttonDownPin = 1; 
+const int buttonContinuePin = 2; 
+const int buttonSetValuePin = 3; 
+
+int buttonUp = LOW;    
+int buttonDown = LOW; 
+int buttonContinue = LOW;
+int buttonSetValue = LOW;
 
 //Various Things to be counted
 int pictureCount = 0; int pictureTotal = 0; //Num of pictures
@@ -22,6 +27,10 @@ void setup()
 {
     lcd.begin(16, 2);    // set up the LCD's number of columns and rows:
     Serial.begin(9600);
+    pinMode(buttonUpPin, INPUT);
+    pinMode(buttonDownPin, INPUT);
+    pinMode(buttonContinuePin, INPUT);
+    pinMode(buttonSetValuePin, INPUT);
 }
 /*********************************************************/
 void lcdClearLine()
@@ -155,8 +164,8 @@ void screen4(int currentSecondOfTimer){
         lcd.print("P: " + String(pictureCount) + "/" + String(pictureCount)); //Replace numbers with variables
         lcd.setCursor(0,1);
         lcd.print("T: " + String(hCount) + "h " 
-                                        + String(mCount) + "m " 
-                                        + String(sCount) + "s");
+                        + String(mCount) + "m " 
+                        + String(sCount) + "s");
         if(sCount == 59){
             mCount++;
             sCount = 0;
@@ -170,9 +179,19 @@ void screen4(int currentSecondOfTimer){
         }
     }
 }
+void screen5(){
+    lcdClearLine();
+    lcd.setCursor(0,0);
+    lcd.print("Done! P:" + pictureTotal); //Replace numbers with variables
+    lcd.setCursor(0,1);
+    lcd.print("T: " + String(hTotal) + "h " 
+                    + String(mTotal) + "m " 
+                    + String(sTotal) + "s");
+}
 void loop()
 {
-    screen3();
+     screen1();
+
     /*Serial.println("Serial started.");
     for(int s = 5; s>=0; s--){
         screen4(s);
