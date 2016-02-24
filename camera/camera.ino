@@ -6,8 +6,8 @@
 /**********************Hardware Setup**********************/
 //Pins for various elements
 LiquidCrystal lcd(4, 6, 10, 11, 12, 13);
-const int buttonUpPin = 0;   
-const int buttonDownPin = 1; 
+const int buttonUpPin = 8;   
+const int buttonDownPin = 9; 
 const int buttonContinuePin = 2; 
 const int buttonSetValuePin = 3; 
 
@@ -96,21 +96,23 @@ void screen2(){
     lcd.setCursor(0,0);
     lcd.print("Qty or Time?");
     lcd.setCursor(0,1);
-    lcd.print(">Qty    Time"); 
-
+    lcd.print(">Qty    Time");  
     while(buttonSetValue != HIGH){
+        buttonUp = digitalRead(buttonUpPin);
+        buttonDown = digitalRead(buttonDownPin);
         lcd.setCursor(0,1);
         if(buttonContinue == HIGH){
             if(useQty == true){
                 useQty = false;
                 useTime = true;
-                lcd.print("Qty    >Time");     
+                lcd.print(" Qty    >Time   ");     
             }
             else if(useTime == true){
                 useQty = true;
                 useTime = false;
-                lcd.print(">Qty    Time");     
+                lcd.print(">Qty     Time   ");     
             }
+            delay(150);
         }
     }
     if(useQty){
@@ -190,7 +192,7 @@ void screen5(){
 }
 void loop()
 {
-     screen1();
+     screen2();
 
     /*Serial.println("Serial started.");
     for(int s = 5; s>=0; s--){
