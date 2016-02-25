@@ -8,8 +8,8 @@
 LiquidCrystal lcd(4, 6, 10, 11, 12, 13);
 const int buttonUpPin = 8;   
 const int buttonDownPin = 9; 
-const int buttonContinuePin = 2; 
-const int buttonSetValuePin = 3; 
+const int buttonContinuePin = 3; 
+const int buttonSetValuePin = 2; 
 
 int buttonUp = LOW;    
 int buttonDown = LOW; 
@@ -51,36 +51,47 @@ void timeUntilNextPhoto(int interval)
     
 void screen1(){
     //Setup Screen - Select Time
+    Serial.println(buttonSetValue);
+    int timeSet = 0; //Sets whether time being modified is hours, minutes, or seconds 
     while(buttonSetValue != HIGH){
+        buttonUp = digitalRead(buttonUpPin);
+        buttonDown = digitalRead(buttonDownPin);
+        buttonContinue = digitalRead(buttonContinuePin);
+        buttonSetValue = digitalRead(buttonSetValuePin);
         lcdClearLine();
+        Serial.println(String(buttonContinue) + "is buttonContinue ana timeSet is " + String(timeSet));
         lcd.setCursor(0,0);
         lcd.print("Select Time:");
-        lcd.setCursor(0,1);
-        
-        int timeSet = 0; //Sets whether time being modified is hours, minutes, or seconds 
+        lcd.setCursor(13,0);
         if(buttonSetValue == HIGH){
             break; 
         }
         if(buttonContinue == HIGH){
+            Serial.println("La da de la da da");
             if(timeSet == 2){
                 timeSet = 0;
+                Serial.println("WHY NOT ME");
             }
-            else{
-                timeSet++; //Move to next instance
+            else if(timeSet < 2){
+                timeSet ++ ; //Move to next instance
             }
         }
         if(timeSet == 0){ //Set the hours
-            if            (buttonUp == HIGH) {hTotal++;}
-            else if (buttonDown == HIGH)    {hTotal--;}
+            lcd.print("(H)");
+            if(buttonUp == HIGH) {hTotal++;}
+            else if(buttonDown == HIGH)    {hTotal--;}
         }
         else if(timeSet == 1){ //Set the minutes
-            if            (buttonUp == HIGH) {mTotal++;}
-            else if (buttonDown == HIGH)    {mTotal--;}
+            lcd.print("(M)");
+            if(buttonUp == HIGH) {mTotal++;}
+            else if(buttonDown == HIGH)    {mTotal--;}
         }
         else if(timeSet == 2){ //Set the seconds
-            if            (buttonUp == HIGH) {hTotal++;}
-            else if (buttonDown == HIGH)    {hTotal--;}    
+            lcd.print("(S)");
+            if            (buttonUp == HIGH) {sTotal++;}
+            else if (buttonDown == HIGH)    {sTotal--;}    
         }
+        lcd.setCursor(0,1);
         lcd.print(String(hTotal) + "h " 
                         + String(mTotal) + "m " 
                         + String(sTotal) + "s"); //Change to variables
@@ -90,6 +101,7 @@ void screen1(){
 }
 void screen2(){
     //Initiatize screen with qty set to true and print that qty is true
+    delay(150); //***  ONCE DONE CODING SCREEN ONE
     boolean useQty = true;
     boolean useTime = false;
     lcdClearLine();
@@ -192,6 +204,7 @@ void screen5(){
 }
 void loop()
 {
+     screen1();
      screen2();
 
     /*Serial.println("Serial started.");
