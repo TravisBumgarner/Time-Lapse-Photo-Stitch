@@ -1,18 +1,4 @@
-// ArduCAM demo (C)2015 Lee
-// web: http://www.ArduCAM.com
-// This program is a demo of how to use most of the functions
-// of the library with a supported camera modules, and can run on any Arduino platform.
-//
-// This demo was made for Omnivision OV2640 2MP sensor.
-// It will run the ArduCAM Mini 2MP as a real 2MP digital camera, provide both JPEG capture.
-// The demo sketch will do the following tasks:
-// 1. Set the sensor to JPEG mode.
-// 2. Capture and buffer the image to FIFO every 5 seconds 
-// 3. Store the image to Micro SD/TF card with JPEG format in sequential.
-// 4. Resolution can be changed by myCAM.set_JPEG_size() function.
-// This program requires the ArduCAM V3.4.0 (or later) library and ArduCAM Mini 2MP shield
-// and use Arduino IDE 1.5.2 compiler or above
-
+/************************Libraries*************************/
 #include <UTFT_SPI.h>
 #include <SD.h>
 #include <Wire.h>
@@ -25,6 +11,18 @@
 #include <itoa.h>
 #endif
 
+/**********************Hardware Setup**********************/
+//Pins for various elements
+//const int buttonUpPin = 2;   *** These buttons will be updated at some point
+//const int buttonDownPin = 3; 
+//const int buttonContinuePin = 1; 
+//const int buttonSetValuePin = 0;
+
+//int buttonUp = LOW;    
+//int buttonDown = LOW; 
+//int buttonContinue = LOW;
+//int buttonSetValue = LOW;
+
 #define SD_CS 9
 // set pin 4 as the slave select for SPI:
 const int SPI_CS = 3;
@@ -33,6 +31,17 @@ ArduCAM myCAM(OV2640, SPI_CS);
 UTFT myGLCD(SPI_CS);
 LiquidCrystal lcd(10,8,7,6,5,4);
 
+/*******************Various Counters**********************/
+int pictureCount = 0; int pictureTotal = 0; //Num of pictures
+int hCount = 0; int mCount = 0; int sCount = 0; //Current Time
+int hTotal = 0; int mTotal = 0; int sTotal = 0; //Total Time
+int intervalTotal = 0;
+
+boolean useQty = true;
+boolean useTime = false;
+
+
+/************************Setup***************************/
 void setup()
 {
   lcd.begin(16,2);
@@ -98,7 +107,7 @@ void setup()
   }
 }
 
-void loop()
+void takePicture()
 {
   char str[8];
   File outFile;
@@ -191,6 +200,8 @@ void loop()
   start_capture = 0;
 }
 
-
+void loop(){
+  
+}
 
 
