@@ -5,11 +5,11 @@
 
 /**********************Hardware Setup**********************/
 //Pins for various elements
-LiquidCrystal lcd(4, 6, 10, 11, 12, 13);
-const int buttonUpPin = 8;   
-const int buttonDownPin = 9; 
-const int buttonContinuePin = 3; 
-const int buttonSetValuePin = 2;
+LiquidCrystal lcd(   9,8,7,6);
+const int buttonUpPin = 2;   
+const int buttonDownPin = 3; 
+const int buttonContinuePin = 1; 
+const int buttonSetValuePin = 0;
 const int camera = 7; 
 
 int buttonUp = LOW;    
@@ -31,7 +31,7 @@ boolean useTime = false;
 void setup()
 {
     lcd.begin(16, 2);    // set up the LCD's number of columns and rows:
-    Serial.begin(9600);
+    //Serial.begin(9600); Enabling Serial will use up pins 0 and 1
     pinMode(buttonUpPin, INPUT);
     pinMode(buttonDownPin, INPUT);
     pinMode(buttonContinuePin, INPUT);
@@ -56,7 +56,7 @@ void readInputButtons(){
     
 void screen1(){
     //Setup Screen - Select Time
-    Serial.println(buttonSetValue);
+    //Serial.println(buttonSetValue);
     int timeSet = 0; //Sets whether time being modified is hours, minutes, or seconds 
     while(buttonSetValue != HIGH){
         readInputButtons();
@@ -68,7 +68,6 @@ void screen1(){
             return;
         }
         if(buttonContinue == HIGH){
-            Serial.println("La da de la da da");
             if(timeSet == 2){
                 timeSet = 0;
                 Serial.println("WHY NOT ME");
@@ -232,7 +231,6 @@ void screen4(){
           digitalWrite(camera,LOW);
           intervalCurrent = 0;
           pictureCount++;
-          Serial.println(String(pictureCount) + "count and total" + String(pictureTotal));
           if(pictureCount == pictureTotal){
             return;
           }
@@ -260,7 +258,6 @@ void loop()
 {
      screen1();
      delayAndSetLow();
-     Serial.println("Using " + String(hTotal) + "h" + String(mTotal) + "m" + String(sTotal) + "s");
      screen2();
      delayAndSetLow();
      if(useQty == true){
