@@ -5,7 +5,7 @@
 
 /**********************Hardware Setup**********************/
 //Pins for various elements
-LiquidCrystal lcd(   9,8,7,6);
+LiquidCrystal lcd(10,8,7,6,5,4);
 const int buttonUpPin = 2;   
 const int buttonDownPin = 3; 
 const int buttonContinuePin = 1; 
@@ -31,12 +31,11 @@ boolean useTime = false;
 void setup()
 {
     lcd.begin(16, 2);    // set up the LCD's number of columns and rows:
-    //Serial.begin(9600); Enabling Serial will use up pins 0 and 1
+    Serial.begin(9600); //Enabling Serial will use up pins 0 and 1
     pinMode(buttonUpPin, INPUT);
     pinMode(buttonDownPin, INPUT);
     pinMode(buttonContinuePin, INPUT);
     pinMode(buttonSetValuePin, INPUT);
-    pinMode(camera, OUTPUT);
 }
 /*********************************************************/
 void lcdClearLine()
@@ -48,10 +47,15 @@ void lcdClearLine()
 } 
 
 void readInputButtons(){
-    buttonUp = digitalRead(buttonUpPin);
-    buttonDown = digitalRead(buttonDownPin);
-    buttonContinue = digitalRead(buttonContinuePin);
-    buttonSetValue = digitalRead(buttonSetValuePin);  
+    int sum;
+    buttonUp = LOW;
+    buttonDown = LOW;
+    buttonContinue =  LOW;
+    buttonSetValue =  LOW;
+    if      (analogRead(A0)<10){buttonDown = HIGH;}
+    else if (analogRead(A1)<10){buttonUp = HIGH;}
+    else if (analogRead(A2)<10){buttonContinue = HIGH;}
+    else if (analogRead(A3)<10){buttonSetValue = HIGH;}
 }
     
 void screen1(){
@@ -70,7 +74,6 @@ void screen1(){
         if(buttonContinue == HIGH){
             if(timeSet == 2){
                 timeSet = 0;
-                Serial.println("WHY NOT ME");
             }
             else if(timeSet < 2){
                 timeSet ++ ; //Move to next instance
@@ -145,9 +148,10 @@ void screen21(){
         }
         lcd.setCursor(0,1);
         lcd.print(String(pictureTotal) + " pictures   ");
-        intervalTotal = hTotal * 3600 + mTotal * 60 + sTotal / pictureTotal; //*** Hope this works the first time.
         delay(10);
     }
+    intervalTotal = (hTotal * 3600 + mTotal * 60 + sTotal) / pictureTotal; //*** Hope this works the first time.
+    Serial.println(String(intervalTotal));
 }
 
 void screen22(){
@@ -166,7 +170,7 @@ void screen22(){
         }
         lcd.setCursor(0,1);
         lcd.print(String(intervalTotal) + "s     ");
-        pictureTotal = hTotal * 3600 + mTotal * 60 + sTotal / intervalTotal; //*** Hope this works first time around.
+        pictureTotal = (hTotal * 3600 + mTotal * 60 + sTotal) / intervalTotal; //*** Hope this works first time around.
         delay(100); //Take some time to set the number of seconds
     }
 }
