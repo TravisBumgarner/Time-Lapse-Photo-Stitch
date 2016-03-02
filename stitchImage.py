@@ -3,9 +3,9 @@ import os
 import time
 def getImages():
     imageList = []
-    for folderName, subfolders, filenames in os.walk(".\\imagesToStich"):
+    for folderName, subfolders, filenames in os.walk(".\\imagesToStitch"):
         for filename in filenames:
-            if filename.endswith('.png') or filename.endswith('.jpg') or filename.endswith('.gif'):
+            if filename.endswith('.png') or filename.endswith('.JPG') or filename.endswith('.gif'):
                 imageList.append(filename)
             else:
                 print(filename + " is not a valid image file. Only use png, jpg, gif.")
@@ -16,14 +16,14 @@ def createTestImages():
     i = 0
     for color in colors:
         im = Image.new("RGBA",(600,200),color)
-        im.save(".\\imagesToStich\\" + str(i) + ".png")
+        im.save(".\\imagesToStitch\\" + str(i) + ".png")
         i += 1
 
 def verifyImageSizes(images):
     #Takes in list of images an verifies they're all the same size
-    finalImageSize = Image.open(".\\imagesToStich\\" + images[0]).size
+    finalImageSize = Image.open(".\\imagesToStitch\\" + images[0]).size
     for image in images:
-        if finalImageSize == Image.open(".\\imagesToStich\\" + image).size:
+        if finalImageSize == Image.open(".\\imagesToStitch\\" + image).size:
             continue
         else:
             print("Image " + image + " is not the same size as the other images.")
@@ -47,14 +47,14 @@ def genFileName(fileName):
 def stitchImages(images):
     #images is an list of image file names
     #Grab finalImageSize from first image in list
-    finalImageSize = Image.open(".\\imagesToStich\\" + images[0]).size
+    finalImageSize = Image.open(".\\imagesToStitch\\" + images[0]).size
     xPosition = 0
     #Creates a pixel width based on the number of images and the width of each image
     xWidth = int(finalImageSize[0]/len(images))
     finalImage = Image.new('RGBA',finalImageSize,"White")
     print("Now Creating image with size: " + str(finalImageSize) + " with pixels/image of " + str(xWidth))
     for image in images:
-        openImage = Image.open(".\\imagesToStich\\" + image)
+        openImage = Image.open(".\\imagesToStitch\\" + image)
         #Crop doesn't go, top, left, width, height.
         #It goes x1,y1,x2,y2
         cropImage = openImage.crop((xPosition,0,xPosition+xWidth,finalImageSize[1]))
@@ -93,7 +93,7 @@ def removeWhiteSpace(finalImage):
 
 def main():
     try:
-    #Gets images from \imagesToStich
+    #Gets images from \imagesToStitch
         images = getImages()
         verifyImageSizes(images)
         
@@ -107,6 +107,7 @@ def main():
         print("Whitespace removed successfully in " + "--- %s seconds ---" % (time.time() - startTime))
     except IndexError:
         print("Images folder is empty")
+
 if __name__ == '__main__':
     main()
     input("Press enter to close.")
