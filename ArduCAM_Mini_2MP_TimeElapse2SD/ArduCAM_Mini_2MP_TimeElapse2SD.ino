@@ -19,7 +19,7 @@ int buttonSetValue = LOW;
 const int SPI_CS = 3;
 ArduCAM myCAM(OV2640, SPI_CS);
 UTFT myGlcd(SPI_CS);
-//LiquidCrystal lcd(10, 8, 7, 6, 5, 4);
+LiquidCrystal lcd(10, 8, 7, 6, 5, 4);
 /*******************Various Counters**********************/
 int pictureCount = 0; int pictureTotal = 0; //Num of pictures
 int hCount = 0; int mCount = 0; int sCount = 0; //Current Time
@@ -30,7 +30,7 @@ boolean useTime = false;
 /**************************Setup***************************/
 void setup()
 {
-  //lcd.begin(16, 2);
+  lcd.begin(16, 2);
   //Serial.begin(9600);
   uint8_t vid, pid;
   uint8_t temp;
@@ -41,8 +41,8 @@ void setup()
 #endif
   //Serial.begin(115200);
   //Serial.println("ArduCAM Start!");
-  //lcd.setCursor(0, 0);
-  //lcd.print("ArduCAM Start!  ");
+  lcd.setCursor(0, 0);
+  lcd.print("ArduCAM Start!  ");
   // set the SPI_CS as an output:
   pinMode(SPI_CS, OUTPUT);
   // initialize SPI:
@@ -52,22 +52,22 @@ void setup()
   temp = myCAM.read_reg(ARDUCHIP_TEST1);
   if (temp != 0x55)
   {
-    //lcd.setCursor(0, 1);
-    //lcd.print("SPI Interface Err");
+    lcd.setCursor(0, 1);
+    lcd.print("SPI Interface Err");
     //Serial.println("SPI interface Error!");
     while (1);
   }
   //Check if the camera module type is OV2640
   myCAM.rdSensorReg8_8(OV2640_CHIPID_HIGH, &vid);
   myCAM.rdSensorReg8_8(OV2640_CHIPID_LOW, &pid);
-  //lcd.setCursor(0, 1);
+  lcd.setCursor(0, 1);
   if ((vid != 0x26) || (pid != 0x42)) {
     //Serial.println("Can't find OV2640 module!");
-    //lcd.print("2640 is Missing  ");
+    lcd.print("2640 is Missing  ");
   }
   else {
     //Serial.println("OV2640 detected");
-    //lcd.print("2640 is Found   ");
+    lcd.print("2640 is Found   ");
   }
   delay(1000);
   //Change to BMP capture mode and initialize the OV2640 module
@@ -80,25 +80,25 @@ void setup()
   if (!SD.begin(SD_CS))
   {
     //Serial.println("SD Card Error");
-    //lcd.setCursor(0, 1);
-    //lcd.print("SD Card Error   ");
+    lcd.setCursor(0, 1);
+    lcd.print("SD Card Error   ");
     while (1);		//If failed, stop here ***This line might cause errors
   }
   else {
     //Serial.println("SD Card detected!");
-    //lcd.setCursor(0, 1);
-    //lcd.print("SD Card detected");
+    lcd.setCursor(0, 1);
+    lcd.print("SD Card detected");
   }
   delay(1000);
 }
 /**************************Functions**************************/
-/*void //lcdClearLine() //This was replaced with just making every string 16 characters long
-{
-  //lcd.setCursor(0, 0);
-  //lcd.print("                                ");
-  //lcd.setCursor(0, 1);
-  //lcd.print("                                ");
-}*/
+void lcdClearLine() //This was replaced with just making every string 16 characters long
+  {
+  lcd.setCursor(0, 0);
+  lcd.print("                                ");
+  lcd.setCursor(0, 1);
+  lcd.print("                                ");
+  }
 void readInputButtons() {
   int sum;
   buttonUp = LOW;
@@ -133,7 +133,7 @@ void takePicture()
 
   start_capture = 1;
   delay(5000);
-  
+
   if (start_capture)
   {
     //Flush the FIFO
@@ -143,16 +143,16 @@ void takePicture()
     //Start capture
     myCAM.start_capture();
     //Serial.println("Start Capture");
-    //lcd.setCursor(0,1);
-    //lcd.print("Start Capture    ");
+    lcd.setCursor(0,1);
+    lcd.print("Start Capture    ");
   }
 
   while (!myCAM.get_bit(ARDUCHIP_TRIG , CAP_DONE_MASK));
 
 
   //Serial.println("Capture Done!");
-  //lcd.setCursor(0,1);
-  //lcd.print("Capture Done!   ");
+  lcd.setCursor(0,1);
+  lcd.print("Capture Done!   ");
   //Construct a file name
   k = k + 1;
   itoa(k, str, 10);
@@ -162,8 +162,8 @@ void takePicture()
   if (! outFile)
   {
     //Serial.println("open file failed");
-    //lcd.setCursor(0,1);
-    //lcd.print("Open file failed");
+    lcd.setCursor(0,1);
+    lcd.print("Open file failed");
     return;
   }
   total_time = millis();
@@ -216,10 +216,10 @@ void screen1() {
   int timeSet = 0; //Sets whether time being modified is hours, minutes, or seconds
   while (buttonSetValue != HIGH) {
     readInputButtons();
-    ////lcdClearLine();
-    //lcd.setCursor(0, 0);
-    //lcd.print("Select Time: ");
-    //lcd.setCursor(13, 0);
+    lcdClearLine();
+    lcd.setCursor(0, 0);
+    lcd.print("Select Time: ");
+    lcd.setCursor(13, 0);
     if (buttonSetValue == HIGH) {
       return;
     }
@@ -232,7 +232,7 @@ void screen1() {
       }
     }
     if (timeSet == 0) { //Set the hours
-      //lcd.print("(H)");
+      lcd.print("(H)");
       if (buttonUp == HIGH) {
         hTotal++;
       }
@@ -241,7 +241,7 @@ void screen1() {
       }
     }
     else if (timeSet == 1) { //Set the minutes
-      //lcd.print("(M)");
+      lcd.print("(M)");
       if (buttonUp == HIGH) {
         mTotal++;
       }
@@ -250,7 +250,7 @@ void screen1() {
       }
     }
     else if (timeSet == 2) { //Set the seconds
-      //lcd.print("(S)");
+      lcd.print("(S)");
       if            (buttonUp == HIGH) {
         sTotal++;
       }
@@ -258,46 +258,46 @@ void screen1() {
         sTotal--;
       }
     }
-    //lcd.setCursor(0, 1);
-    //lcd.print(String(hTotal) + "h "
-//              + String(mTotal) + "m "
-//              + String(sTotal) + "s         "); //Change to variables
+    lcd.setCursor(0, 1);
+    lcd.print(String(hTotal) + "h "
+                  + String(mTotal) + "m "
+                  + String(sTotal) + "s         "); //Change to variables
     delay(50);
   }
 }
 void screen2() {
   //Initiatize screen with qty set to true and print that qty is true
- // //lcdClearLine();
-  //lcd.setCursor(0, 0);
-  //lcd.print("Qty or Time?    ");
-  //lcd.setCursor(0, 1);
-  //lcd.print(">Qty    Time    ");
+  // lcdClearLine();
+  lcd.setCursor(0, 0);
+  lcd.print("Qty or Time?    ");
+  lcd.setCursor(0, 1);
+  lcd.print(">Qty    Time    ");
   while (buttonSetValue != HIGH) {
     delay(500); //*** Maybe remove once done.
     readInputButtons();
     if (buttonSetValue == HIGH) {
       return;
     }
-    //lcd.setCursor(0, 1);
+    lcd.setCursor(0, 1);
     if (buttonContinue == HIGH) {
       if (useQty == true) {
         useQty = false;
         useTime = true;
-        //lcd.print(" Qty    >Time   ");
+        lcd.print(" Qty    >Time   ");
       }
       else if (useTime == true) {
         useQty = true;
         useTime = false;
-        //lcd.print(">Qty     Time   ");
+        lcd.print(">Qty     Time   ");
       }
     }
   }
 }
 void screen21() {
   //Used for if useQty is selected
-  ////lcdClearLine();
-  //lcd.setCursor(0, 0);
-  //lcd.print("What quantity?  ");
+  lcdClearLine();
+  lcd.setCursor(0, 0);
+  lcd.print("What quantity?  ");
   while (buttonSetValue != HIGH) {
     if (buttonSetValue == HIGH) {
       return;
@@ -313,8 +313,8 @@ void screen21() {
       pictureTotal++;
       delay(200);
     }
-    //lcd.setCursor(0, 1);
-    //lcd.print(String(pictureTotal) + " pictures       ");
+    lcd.setCursor(0, 1);
+    lcd.print(String(pictureTotal) + " pictures       ");
     delay(10);
   }
   intervalTotal = (hTotal * 3600 + mTotal * 60 + sTotal) / pictureTotal; //*** Hope this works the first time.
@@ -322,9 +322,9 @@ void screen21() {
 }
 void screen22() {
   //Used for if useTime is selected
-  ////lcdClearLine();
-  //lcd.setCursor(0, 0);
-  //lcd.print("What duration?  ");
+  lcdClearLine();
+  lcd.setCursor(0, 0);
+  lcd.print("What duration?  ");
   while (buttonSetValue != HIGH) {
     readInputButtons();
     if (buttonSetValue == HIGH) {
@@ -340,15 +340,15 @@ void screen22() {
       intervalTotal++;
       delay(200);
     }
-    //lcd.setCursor(0, 1);
-    //lcd.print(String(intervalTotal) + "s     ");
+    lcd.setCursor(0, 1);
+    lcd.print(String(intervalTotal) + "s     ");
     pictureTotal = (hTotal * 3600 + mTotal * 60 + sTotal) / intervalTotal; //*** Hope this works first time around.
     delay(100); //Take some time to set the number of seconds
   }
 }
 void screen3() {
-  //lcd.setCursor(0, 0);
-  //lcd.print("Starting in 5s");
+  lcd.setCursor(0, 0);
+  lcd.print("Starting in 5s");
   delay(5000);
 }
 
@@ -373,18 +373,18 @@ void screen4() {
       }
     }
     if (viewStats1) {
-      ////lcdClearLine();
-      //lcd.setCursor(0, 0);
-      //lcd.print("Next Photo: " + String(timeLeftUntilNextPicture)+"s");
+      lcdClearLine();
+      lcd.setCursor(0, 0);
+      lcd.print("Next Photo: " + String(timeLeftUntilNextPicture)+"s");
     }
     else if (viewStats2) {
-      ////lcdClearLine();
-      //lcd.setCursor(0, 0);
-      //lcd.print("P: " + String(pictureCount) + "/" + String(pictureTotal)+"     "); //Replace numbers with variables
-      //lcd.setCursor(0, 1);
-      //lcd.print("T: " + String(hCount) + "h "
-//                + String(mCount) + "m "
-  //              + String(sCount) + "s"+ "     ");
+      lcdClearLine();
+      lcd.setCursor(0, 0);
+      lcd.print("P: " + String(pictureCount) + "/" + String(pictureTotal)+"     "); //Replace numbers with variables
+      lcd.setCursor(0, 1);
+      lcd.print("T: " + String(hCount) + "h "
+                      + String(mCount) + "m "
+                    + String(sCount) + "s"+ "     ");
     }
     for (int s = 1; s <= 20; s++) {
       readInputButtons();
@@ -413,17 +413,17 @@ void screen4() {
   }
 }
 /*void screen5(){
-    //lcdClearLine();
-    //lcd.setCursor(0,0);
-    //lcd.print("Done! P:" + String(pictureTotal)); //Replace numbers with variables
-    //lcd.setCursor(0,1);
-    //lcd.print("T: " + String(hTotal) + "h "
+    lcdClearLine();
+    lcd.setCursor(0,0);
+    lcd.print("Done! P:" + String(pictureTotal)); //Replace numbers with variables
+    lcd.setCursor(0,1);
+    lcd.print("T: " + String(hTotal) + "h "
                     + String(mTotal) + "m "
                     + String(sTotal) + "s");
   }*/
 void delayAndSetLow() {
   //Clear screen, wait 1 second and read pins.
-  ////lcdClearLine();
+  lcdClearLine();
   delay(1000);
   readInputButtons();
 }

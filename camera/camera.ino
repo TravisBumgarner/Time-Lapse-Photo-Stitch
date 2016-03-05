@@ -5,12 +5,7 @@
 
 /**********************Hardware Setup**********************/
 //Pins for various elements
-LiquidCrystal lcd(10,8,7,6,5,4);
-const int buttonUpPin = 2;   
-const int buttonDownPin = 3; 
-const int buttonContinuePin = 1; 
-const int buttonSetValuePin = 0;
-const int camera = 7; 
+LiquidCrystal lcd(7,6,5,4,3,2);
 
 int buttonUp = LOW;    
 int buttonDown = LOW; 
@@ -32,10 +27,6 @@ void setup()
 {
     lcd.begin(16, 2);    // set up the LCD's number of columns and rows:
     Serial.begin(9600); //Enabling Serial will use up pins 0 and 1
-    pinMode(buttonUpPin, INPUT);
-    pinMode(buttonDownPin, INPUT);
-    pinMode(buttonContinuePin, INPUT);
-    pinMode(buttonSetValuePin, INPUT);
 }
 /*********************************************************/
 void lcdClearLine()
@@ -52,10 +43,10 @@ void readInputButtons(){
     buttonDown = LOW;
     buttonContinue =  LOW;
     buttonSetValue =  LOW;
-    if      (analogRead(A0)<10){buttonDown = HIGH;}
-    else if (analogRead(A1)<10){buttonUp = HIGH;}
-    else if (analogRead(A2)<10){buttonContinue = HIGH;}
-    else if (analogRead(A3)<10){buttonSetValue = HIGH;}
+    if      (analogRead(A3)<10){buttonDown = HIGH;}
+    else if (analogRead(A2)<10){buttonUp = HIGH;}
+    else if (analogRead(A1)<10){buttonContinue = HIGH;}
+    else if (analogRead(A0)<10){buttonSetValue = HIGH;}
 }
     
 void screen1(){
@@ -230,9 +221,6 @@ void screen4(){
         if(mCount == 59){hCount++; mCount = 0;}
         intervalCurrent++; 
         if(timeLeftUntilNextPicture == 0){
-          digitalWrite(camera,HIGH);
-          delay(2000);
-          digitalWrite(camera,LOW);
           intervalCurrent = 0;
           pictureCount++;
           if(pictureCount == pictureTotal){
